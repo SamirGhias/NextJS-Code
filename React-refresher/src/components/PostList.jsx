@@ -2,6 +2,7 @@ import { useState } from 'react';
 import NewPost from './NewPost';
 import Post from './Post';
 import classes from './PostList.module.css';
+import Modal from './Modal';
 
 function PostList(props) {
   const [enteredBody, setEnteredBody] = useState('');
@@ -15,12 +16,30 @@ function PostList(props) {
     setEnteredAuthor(event.target.value);
   }
 
+  let modalContent;
+  // if (modalIsVisible) {
+  //   modalContent = (
+  // <Modal onClose={hideModalHandler}>
+  //   <NewPost
+  //     onBodyChange={bodyChangedHandler}
+  //     onAuthorChange={AuthorChangedHandler}
+  //   ></NewPost>
+  // </Modal>
+  //   );
+  // }
+
   return (
     <>
-      <NewPost
-        onBodyChange={bodyChangedHandler}
-        onAuthorChange={AuthorChangedHandler}
-      ></NewPost>
+      {/* {modalContent} */}
+      {props.isPosting && (
+        <Modal onClose={props.onStopPosting}>
+          <NewPost
+            onBodyChange={bodyChangedHandler}
+            onAuthorChange={AuthorChangedHandler}
+          ></NewPost>
+        </Modal>
+      )}
+
       <ul className={classes.posts}>
         <li>
           <Post author={enteredAuthor} body={enteredBody} />
