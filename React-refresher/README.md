@@ -1,1 +1,9 @@
-Next.JS Code completed with help from a course as part of tasks and exercises.
+How to run:
+- call 'npm install' in both client and server folders.
+
+run client:
+- 'npm run dev'
+
+run server:
+- 'npm start'
+
