@@ -1,59 +1,79 @@
-import { useState } from "react";
-import classes from "./NewPost.module.css";
-import Modal from "../components/Modal";
+// import { useState } from 'react';
+import classes from './NewPost.module.css';
+import Modal from '../components/Modal';
+import { Link, Form, redirect } from 'react-router-dom';
 
-function NewPost({ onCancel, onCreatePost }) {
-  const [enteredBody, setEnteredBody] = useState("");
-  const [enteredAuthor, setEnteredAuthor] = useState("");
+function NewPost() {
+  // const [enteredBody, setEnteredBody] = useState('');
+  // const [enteredAuthor, setEnteredAuthor] = useState('');
 
-  function bodyChangedHandler(event) {
-    setEnteredBody(event.target.value);
-  }
+  // function bodyChangedHandler(event) {
+  //   setEnteredBody(event.target.value);
+  // }
 
-  function AuthorChangedHandler(event) {
-    setEnteredAuthor(event.target.value);
-  }
+  // function AuthorChangedHandler(event) {
+  //   setEnteredAuthor(event.target.value);
+  // }
 
-  function submitHandler(event) {
-    event.preventDefault();
-    console.log(event);
-    const postData = {
-      body: enteredBody,
-      author: enteredAuthor,
-    };
-    onCreatePost(postData);
-    onCancel();
-  }
+  // function submitHandler(event) {
+  //   event.preventDefault();
+  //   console.log(event);
+  //   const postData = {
+  //     body: enteredBody,
+  //     author: enteredAuthor,
+  //   };
+  // }
 
   return (
     <Modal>
-      <form className={classes.form} onSubmit={submitHandler}>
+      <Form
+        method='post'
+        className={classes.form}
+        // onSubmit={submitHandler}
+      >
         <p>
-          <label htmlFor="body">Text</label>
+          <label htmlFor='body'>Text</label>
           <textarea
-            id="body"
+            id='body'
+            name='body'
             required
             rows={3}
-            onChange={bodyChangedHandler}
+            // onChange={bodyChangedHandler}
           ></textarea>
         </p>
         <p>
-          <label htmlFor="name">Your name</label>
+          <label htmlFor='name'>Your name</label>
           <textarea
-            type="text"
-            id="name"
+            type='text'
+            id='name'
+            name='author'
             required
-            onChange={AuthorChangedHandler}
+            // onChange={AuthorChangedHandler}
           ></textarea>
         </p>
         <p className={classes.actions}>
-          <button type="button" onClick={onCancel}>
+          <Link type='button' to='/'>
             Cancel
-          </button>
+          </Link>
           <button>Submit</button>
         </p>
-      </form>
+      </Form>
     </Modal>
   );
 }
 export default NewPost;
+export async function action(data) {
+  //could also destructure as ({request})
+  const formData = await data.request.formData(); //formData returns promise, so function needs to be async
+  // now formData is an object that can call formData.get('body') to obtain fields.
+  const postData = Object.fromEntries(formData); // lookds like { body: '...', author:'....' }
+  await fetch('http://localhost:8080/posts', {
+    method: 'POST',
+    body: JSON.stringify(postData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return redirect('/');
+}

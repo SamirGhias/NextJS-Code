@@ -1,11 +1,13 @@
-import PostList from "../components/PostList";
-import { useState } from "react";
+import PostList from '../components/PostList';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 function Posts() {
   const [modalIsVisible, setModalIsVisible] = useState(true);
 
   return (
     <>
+      <Outlet />
       <main>
         <PostList />
       </main>
@@ -14,3 +16,8 @@ function Posts() {
 }
 
 export default Posts;
+export async function loader() {
+  const response = await fetch('http://localhost:8080/posts');
+  const resData = await response.json();
+  return resData.posts;
+}
